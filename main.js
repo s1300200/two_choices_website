@@ -232,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return a.sample_id - b.sample_id;
         });
 
-        rankingList.innerHTML = '';
+        rankingList.replaceChildren();
         
         // Calculate ranks with ties (同点なら同順位)
         let currentRank = 1;
@@ -252,14 +252,26 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (currentRank === 2) rankClass = 'rank-2';
             else if (currentRank === 3) rankClass = 'rank-3';
 
-            li.innerHTML = `
-                <div class="rank-badge ${rankClass}">${currentRank}</div>
-                <div class="ranking-text">
-                    <div style="font-size:0.8rem; color:#94a3b8; margin-bottom:0.2rem">Sample ID: ${item.sample_id}</div>
-                    ${item.text}
-                </div>
-                <div class="ranking-score">${item.score} pt</div>
-            `;
+            const rankBadge = document.createElement('div');
+            rankBadge.className = `rank-badge ${rankClass}`.trim();
+            rankBadge.textContent = String(currentRank);
+
+            const rankingText = document.createElement('div');
+            rankingText.className = 'ranking-text';
+
+            const rankingMeta = document.createElement('div');
+            rankingMeta.className = 'ranking-meta';
+            rankingMeta.textContent = `Sample ID: ${item.sample_id}`;
+
+            const itemText = document.createElement('div');
+            itemText.textContent = item.text;
+
+            const rankingScore = document.createElement('div');
+            rankingScore.className = 'ranking-score';
+            rankingScore.textContent = `${item.score} pt`;
+
+            rankingText.append(rankingMeta, itemText);
+            li.append(rankBadge, rankingText, rankingScore);
             
             rankingList.appendChild(li);
             
@@ -293,7 +305,6 @@ document.addEventListener('DOMContentLoaded', () => {
         csvRows.push(header.join(','));
 
         judgments.forEach(j => {
-            const esc = (text) => '"' + String(text).replace(/"/g, '""') + '"';
             csvRows.push([
                 'human',
                 '0.0',
@@ -306,17 +317,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 j.response_time_sec,
                 j.text_a.sample_id,
                 j.text_a.item_id,
-                esc(j.text_a.text),
+                j.text_a.text,
                 j.text_b.sample_id,
                 j.text_b.item_id,
-                esc(j.text_b.text),
+                j.text_b.text,
                 j.selected.sample_id,
                 j.selected.item_id,
-                esc(j.selected.text)
-            ].join(','));
+                j.selected.text
+            ].map(csvCell).join(','));
         });
 
         return csvRows.join('\n');
+    }
+
+    function csvCell(value) {
+        let text = String(value ?? '');
+
+        if (/^[=+\-@\t\r\n]/.test(text) || /^\s+[=+\-@]/.test(text)) {
+            text = `'${text}`;
+        }
+
+        return `"${text.replace(/"/g, '""')}"`;
     }
 
     async function autoSaveResult() {
@@ -341,8 +362,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error('save failed');
             }
 
-            const result = await response.json();
-            saveStatus.textContent = `結果を result/${result.fileName} に保存しました。`;
+            await response.json();
+            saveStatus.textContent = '結果をサーバーに保存しました。';
             downloadBtn.textContent = '同じCSVをダウンロード';
         } catch (error) {
             saveStatus.textContent = '自動保存できませんでした。下のボタンからCSVをダウンロードしてください。';

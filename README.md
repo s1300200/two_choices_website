@@ -64,6 +64,37 @@ PORT=3000 node server.js
 - `text_b`
 - `selected_text`
 
+## サーバー設定
+
+`server.js` は、必要な静的ファイルだけを配信し、結果保存APIには基本的な検証と制限をかけています。
+
+配信対象:
+
+- `/`
+- `/index.html`
+- `/style.css`
+- `/main.js`
+
+主な環境変数:
+
+| 変数 | 既定値 | 説明 |
+| --- | --- | --- |
+| `PORT` | `8000` | 起動ポート |
+| `HOST` | `127.0.0.1` | listenするホスト。本番環境では必要に応じて `0.0.0.0` を指定 |
+| `RESULT_DIR` | `./result` | 結果CSVの保存先 |
+| `ALLOWED_ORIGINS` | 空 | 許可するOrigin。カンマ区切りで指定 |
+| `MAX_BODY_BYTES` | `262144` | `/save-result` の最大リクエストサイズ |
+| `RATE_LIMIT_WINDOW_MS` | `600000` | レート制限の時間枠 |
+| `RATE_LIMIT_MAX` | `60` | 時間枠内で許可する保存リクエスト数 |
+| `FRAME_ANCESTORS` | `'none'` | CSPの `frame-ancestors` 値 |
+| `ENABLE_HSTS` | 未設定 | `true` の場合、HSTSヘッダーを送信 |
+
+例:
+
+```bash
+ALLOWED_ORIGINS=https://example.com RESULT_DIR=/var/app/results node server.js
+```
+
 ## ディレクトリ構成
 
 ```text
@@ -80,14 +111,14 @@ PORT=3000 node server.js
 
 ## 公開時の注意
 
-このアプリを外部公開する場合は、結果を安全に保存できるサーバー/APIを用意することを推奨します。
+このアプリを外部公開する場合は、結果CSVを公開URLから直接読めない場所に保存してください。
 
-現在の簡易サーバーはローカル利用向けです。本番公開前には少なくとも次を確認してください。
+本番公開前には少なくとも次を確認してください。
 
-- `result/` のCSVを公開URLから直接読めない場所に保存する
-- `/save-result` に認証、入力検証、レート制限を追加する
-- CSV由来の文字列をHTMLとして挿入しない
-- HTTPSを必須にする
+- `RESULT_DIR` をWeb公開ディレクトリの外に設定する
+- `ALLOWED_ORIGINS` に公開URLを設定する
+- HTTPSをホスティング環境またはリバースプロキシで有効化する
+- 管理者向けの結果ダウンロード機能を追加する場合は認証を必須にする
 - 収集するデータ、保存期間、削除方法を明示する
 - 個人情報や不要な識別情報を保存しない
 

@@ -282,10 +282,24 @@ input[type="file"] {
     font-size: 1.1rem;
 }
 
+.ranking-meta {
+    color: #94a3b8;
+    font-size: 0.8rem;
+    margin-bottom: 0.2rem;
+}
+
 .ranking-score {
     font-weight: bold;
     color: #4facfe;
     margin-left: 1rem;
+}
+
+.result-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    text-align: center;
 }
 
 @media (max-width: 600px) {
