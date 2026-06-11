@@ -1,0 +1,11 @@
+.DS_Store
+node_modules/
+npm-debug.log*
+
+# Local result exports should not be published.
+result/*.csv
+!result/.gitkeep
+
+# Local analysis/export files.
+all_pair_*.csv
+sampled_10.csv

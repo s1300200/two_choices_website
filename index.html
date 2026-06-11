@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2択比較ランキング</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app" class="container">
+        <!-- 初期画面：ファイルアップロード -->
+        <section id="start-screen" class="screen active">
+            <h1>2択比較ランキング</h1>
+            <p>CSVファイル（sample_id, item_id, textの形式）をアップロードしてください。<br>10個のテキストから2つずつ表示され、45回の比較を行います。</p>
+            <div class="upload-area">
+                <input type="file" id="csv-file" accept=".csv">
+                <label for="csv-file" class="btn primary">ファイルを選択</label>
+                <span id="file-name">選択されていません</span>
+            </div>
+            <button id="start-btn" class="btn secondary" disabled>スタート</button>
+        </section>
+
+        <!-- 比較画面 -->
+        <section id="comparison-screen" class="screen">
+            <div id="comparison-label" class="label-banner">ラベル: -</div>
+            <div class="progress-bar-container">
+                <div id="progress-bar" class="progress-bar"></div>
+            </div>
+            <h2 id="progress-text">1 / 45</h2>
+            <p class="instruction">どちらか直感で選んでください</p>
+            
+            <div class="cards-container">
+                <div id="card-a" class="card">
+                    <p id="text-a" class="card-text"></p>
+                </div>
+                <div class="vs">VS</div>
+                <div id="card-b" class="card">
+                    <p id="text-b" class="card-text"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 結果画面 -->
+        <section id="result-screen" class="screen">
+            <h1>最終ランキング</h1>
+            <p id="save-status">あなたの選択に基づいた結果です。</p>
+            <div class="ranking-container">
+                <ul id="ranking-list"></ul>
+            </div>
+            <div style="text-align: center; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <button id="download-btn" class="btn secondary">結果をCSVでダウンロード</button>
+                <button id="restart-btn" class="btn primary">もう一度やり直す</button>
+            </div>
+        </section>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
