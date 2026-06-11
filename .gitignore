@@ -2,6 +2,13 @@
 node_modules/
 npm-debug.log*
 
+# Local input data should not be published.
+data/**
+!data/
+!data/.gitkeep
+!data/generated_phrases/
+!data/generated_phrases/.gitkeep
+
 # Local result exports should not be published.
 result/*.csv
 !result/.gitkeep

@@ -95,6 +95,7 @@ PORT=3000 node server.js
 
 `.gitignore` では、ローカルの結果CSVや分析用CSVをコミットしないようにしています。
 
+- `data/**`
 - `result/*.csv`
 - `all_pair_*.csv`
 - `sampled_10.csv`
